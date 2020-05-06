@@ -59,7 +59,7 @@ script:
       echo "!!! matplotlib py27 fix"
       echo 'backend : Agg' > matplotlibrc
       echo "!!! running pytest"
-      pytest --cov=pycalphad
+      pytest -s -k vacancy_hessian --cov=pycalphad
       echo "!!! Running ci/deploy script"
       bash ci/deploy.sh
       coveralls

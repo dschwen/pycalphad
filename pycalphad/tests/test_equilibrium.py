@@ -265,7 +265,7 @@ def test_eq_large_vacancy_hessian():
     dbf = NI_AL_DUPIN_2001_DBF
     comps = ['AL', 'NI', 'VA']
     phases = ['BCC_B2']
-    eq = equilibrium(dbf, comps, phases, {v.P: 101325, v.T: 1804, v.N: 1, v.X('AL'): 0.4798})
+    eq = equilibrium(dbf, comps, phases, {v.P: 101325, v.T: 1804, v.N: 1, v.X('AL'): 0.4798}, verbose=True)
     assert_allclose(eq.GM.values, -154338.129)
     assert_allclose(eq.MU.values.flatten(), [-167636.23822714, -142072.78317111])
     assert_allclose(eq.X.sel(vertex=0).values.flatten(), [0.4798, 0.5202])

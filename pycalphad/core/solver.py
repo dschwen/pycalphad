@@ -191,6 +191,8 @@ class SundmanSolver(SolverBase):
         """
         cur_conds = prob.conditions
         compsets = prob.composition_sets
+        if self.verbose:
+            print(f"Solving with compsets {compsets}")
         state_variables = compsets[0].phase_record.state_variables
         num_statevars = len(state_variables)
         num_components = len(prob.nonvacant_elements)
@@ -222,9 +224,9 @@ class SundmanSolver(SolverBase):
                   num_statevars, num_components, prescribed_system_amount,
                   chemical_potentials, free_chemical_potential_indices, fixed_chemical_potential_indices,
                   prescribed_element_indices, prescribed_elemental_amounts,
-                  free_statevar_indices, fixed_statevar_indices)
+                  free_statevar_indices, fixed_statevar_indices, self.verbose)
 
         if self.verbose:
-            print('Chemical Potentials', chemical_potentials)
-            print(x)
+            print('Chemical Potentials', np.asarray(chemical_potentials))
+            print(np.asarray(x))
         return SolverResult(converged=converged, x=x, chemical_potentials=chemical_potentials)

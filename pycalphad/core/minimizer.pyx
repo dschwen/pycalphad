@@ -374,7 +374,7 @@ cpdef find_solution(list compsets, int[::1] free_stable_compset_indices,
                     double[::1] initial_chemical_potentials, int[::1] free_chemical_potential_indices,
                     int[::1] fixed_chemical_potential_indices,
                     int[::1] prescribed_element_indices, double[::1] prescribed_elemental_amounts,
-                    int[::1] free_statevar_indices, int[::1] fixed_statevar_indices):
+                    int[::1] free_statevar_indices, int[::1] fixed_statevar_indices, bint verbose):
     cdef int iteration, idx, comp_idx, i
     cdef int num_stable_phases, num_fixed_components, num_free_variables
     cdef CompositionSet compset
@@ -398,6 +398,7 @@ cpdef find_solution(list compsets, int[::1] free_stable_compset_indices,
     cdef bint converged = False
 
     for iteration in range(100):
+        print(f'Iteration {iteration}')
         current_elemental_amounts[:] = 0
         all_phase_energies[:,:] = 0
         all_phase_amounts[:,:] = 0
@@ -439,6 +440,8 @@ cpdef find_solution(list compsets, int[::1] free_stable_compset_indices,
                 if phase_amt[idx] > 0:
                     current_elemental_amounts[comp_idx] += phase_amt[idx] * masses_tmp[comp_idx, 0]
             compset.phase_record.obj(all_phase_energies[idx, :], x)
+        if verbose:
+            print(f'Energies {np.asarray(all_phase_energies)[:, 0]}')
 
         # SECOND STEP: Update potentials and phase amounts, according to conditions
         num_stable_phases = free_stable_compset_indices.shape[0]
@@ -464,7 +467,8 @@ cpdef find_solution(list compsets, int[::1] free_stable_compset_indices,
                                      free_chemical_potential_indices, free_statevar_indices,
                                      free_stable_compset_indices, equilibrium_soln,
                                      largest_statevar_change, largest_phase_amt_change, dof)
-
+        print(f'Chemical potentials {np.asarray(chemical_potentials)}')
+        print(f'phase amount {np.asarray(phase_amt)}')
         # Wait for mass balance to be satisfied before changing phases
         # Phases that "want" to be removed will keep having their phase_amt set to zero, so mass balance is unaffected
         system_is_feasible = (mass_residual < 1e-05) and (largest_internal_cons_max_residual < 1e-10)
